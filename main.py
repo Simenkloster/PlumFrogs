@@ -16,7 +16,7 @@ PLAYER_VEL = 5
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 def main(window):
-    clock = pygame.time.clock()
+    clock = pygame.time.Clock()
 
     run = True
     while run:
