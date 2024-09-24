@@ -8,7 +8,7 @@ pygame.init()
 
 pygame.display.set_caption("Platformer")
 
-BG_COLOR = (255, 255, 255)
+
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
 PLAYER_VEL = 5
@@ -36,21 +36,19 @@ def draw(window, background, bg_image):
     pygame.display.update()
 
 
-# Dette skal inn i "def main()"
-
-background, bg_image = get_background("Blue.png")
-
-# Inn i "while" loopen
-draw(window, background, bg_image)
 
 #Trenger ikke "BG_COLOR"
 
 def main(window):
     clock = pygame.time.Clock()
 
+    background, bg_image = get_background("Blue.png")
+
     run = True
     while run:
         clock.tick(FPS)
+
+        draw(window, background, bg_image)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
