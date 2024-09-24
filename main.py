@@ -15,31 +15,6 @@ PLAYER_VEL = 5
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# Lage background
-def get_background(name):
-    image = pygame.image.load(join("assets", "Background", name))
-    _, _, width, height = image.get_rect()
-    tiles = []
-    
-    for i in range(WIDTH // width + 1):
-        for j in range (HEIGHT // height + 1):
-            pos = [i * width, j * height]
-            tiles.append(pos)
-    
-    return tiles, image
-
-#Tegne background
-def draw(window, background, bg_image):
-    for tile in background:
-        window.blit(bg_image, tuple(tile))
-
-    pygame.display.update()
-
-
-
-#Trenger ikke "BG_COLOR"
-
-
 class player(pygame.sprite.Sprite):
     COLOR = (0,200,255)
     
@@ -73,22 +48,54 @@ class player(pygame.sprite.Sprite):
     def draw(self,win):
         pygame.draw.rect(win,self.COLOR,self.rect)
 
+
+
+# Lage background
+def get_background(name):
+    image = pygame.image.load(join("assets", "Background", name))
+    _, _, width, height = image.get_rect()
+    tiles = []
+    
+    for i in range(WIDTH // width + 1):
+        for j in range (HEIGHT // height + 1):
+            pos = [i * width, j * height]
+            tiles.append(pos)
+    
+    return tiles, image
+
+#Tegne background
+def draw(window, background, bg_image, player):
+    for tile in background:
+        window.blit(bg_image, tuple(tile))
+    
+    player.draw(window)
+
+    pygame.display.update()
+
+
+
+
+
 def main(window):
     clock = pygame.time.Clock()
 
     background, bg_image = get_background("Blue.png")
+    Player1 = player(100, 100, 50, 50)
+
 
     run = True
     while run:
         clock.tick(FPS)
 
-        draw(window, background, bg_image)
+        draw(window, background, bg_image, Player1)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
 
+    
+    
     pygame.quit()
     quit()
 
