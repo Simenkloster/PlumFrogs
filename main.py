@@ -43,6 +43,14 @@ def load_sprite_sheets(dir1,dir2,width,height,direction=False):
     return all_sprites
 
 
+def get_block(size):
+    path = join("assets", "Terrain", "Terrain.png")
+    image = pygame.image.load(path).convert_alpha()
+    surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
+    rect = pygame.Rect(96, 0, size, size)
+    surface.blit(image, (0, 0), rect)
+    return pygame.transform.scale2x(surface)
+
 class player(pygame.sprite.Sprite):
     COLOR = (0,200,255)
     
@@ -50,6 +58,7 @@ class player(pygame.sprite.Sprite):
 
 
     def __init__(self,x,y,width,height):
+        super().__init__()
         self.rect = pygame.Rect(x,y,width,height)
         self.x_vel = 0
         self.y_vel = 0
@@ -76,11 +85,33 @@ class player(pygame.sprite.Sprite):
     def loop(self,fps):
         self.move(self.x_vel,self.y_vel)
 
+    def update(self):
+        self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.sprite)
+
     def draw(self,win):
         self.sprite = self.SPRITES[f'idle_{self.direction}'][0]
         win.blit(self.sprite, (self.rect.x, self.rect.y))
 
+class Object(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, name=None):
+        super().__init__()
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.width = width
+        self.height = height
+        self.name = name
+    
+    def draw(self, win):
+        win.blit(self.image, (self.rect.x, self.rect.y))
 
+
+class Block(Object):
+    def __init__(self, x, y, size):
+        super().__init__(x, y, size, size)
+        block = get_block(size)
+        self.image.blit(block, (0, 0))
+        self.mask = pygame.mask.from_surface(self.image)
 
 # Lage background
 def get_background(name):
@@ -96,10 +127,13 @@ def get_background(name):
     return tiles, image
 
 #Tegne background
-def draw(window, background, bg_image, player):
+def draw(window, background, bg_image, player, objects):
     for tile in background:
         window.blit(bg_image, tuple(tile))
     
+    for obj in objects:
+        obj.draw(window)
+
     player.draw(window)
 
     pygame.display.update()
@@ -118,16 +152,20 @@ def handle_move(player):
 def main(window):
     clock = pygame.time.Clock()
 
+    block_size = 96
+
     # background collor
     background, bg_image = get_background("Yellow.png")
     Player1 = player(100, 100, 50, 50)
+    floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
+   
 
 
     run = True
     while run:
         clock.tick(FPS)
 
-        draw(window, background, bg_image, Player1)
+        draw(window, background, bg_image, Player1, floor)
         Player1.loop(FPS)
         handle_move(Player1)
         for event in pygame.event.get():
@@ -143,4 +181,3 @@ def main(window):
 
 if __name__ == "__main__":
     main(window)
-
