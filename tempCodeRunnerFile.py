@@ -1,1 +1,0 @@
- self.sprite = self.SPRITES[f'idle_{self.direction}'][0]
