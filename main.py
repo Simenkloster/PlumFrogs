@@ -154,6 +154,36 @@ class Block(Object):
         self.image.blit(block, (0, 0))
         self.mask = pygame.mask.from_surface(self.image)
 
+
+class Fire(Object):
+    ANIMATION_DELAY = 3
+
+    def __init__(self,x,y,width,height):
+        super().__init__(x,y,width,height, "fire")
+        self.fire = load_sprite_sheets("Traps","Fire",width,height)
+        self.image = self.fire["off"][0]
+        self.mask = pygame.mask.from_surface(self.image)
+        self.animation_count = 0
+        self.animation_name = "off"
+
+    def on(self):
+        self.animation_name = "on"
+    
+    def off(self):
+        self.animation_name = "off"
+        
+    def loop(self):
+        sprites = self.fire[self.animation_name]
+        sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
+        self.image = sprites[sprite_index]
+        self.animation_count += 1
+
+        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.image)
+
+        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
+            self.animation_count = 0
+
 # Lage background
 def get_background(name):
     image = pygame.image.load(join("assets", "Background", name))
@@ -180,7 +210,6 @@ def draw(window, background, bg_image, player, objects, offset_x):
     pygame.display.update()
 
 
-
 def handle_vertical_collision(player, objects, dy):
     collided_objects = []
     for obj in objects:
@@ -192,7 +221,7 @@ def handle_vertical_collision(player, objects, dy):
                 player.rect.top = obj.rect.bottom
                 player.hit_head()
 
-            collided_objects.append(obj)
+        collided_objects.append(obj)
 
     return collided_objects
 
@@ -216,10 +245,10 @@ def main(window):
     # background collor
     background, bg_image = get_background("Yellow.png")
     Player1 = Player(100, 100, 50, 50)
+    fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
+    fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
-   
-    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size)]
-
+    objects = [*floor, fire]
 
     offset_x = 0
     scroll_area_width = 300
@@ -229,6 +258,7 @@ def main(window):
         clock.tick(FPS)
 
         Player1.loop(FPS)
+        fire.loop()
         handle_move(Player1, objects)
         draw(window, background, bg_image, Player1, objects, offset_x)
         
