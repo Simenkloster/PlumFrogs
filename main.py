@@ -54,7 +54,6 @@ def get_block(size):
 class Player(pygame.sprite.Sprite):
     COLOR = (0,200,255)
     GRAVITY = 1
-    SPRITES = load_sprite_sheets("MainCharacters","NinjaFrog",32,32,True)
     ANIMATION_DELAY = 3
 
 
@@ -68,8 +67,13 @@ class Player(pygame.sprite.Sprite):
         self.animation_count = 0
         self.fall_count = 0
         self.jump_count = 0
+        self.appearing = True
+        self.SPRITES = load_sprite_sheets("MainCharacters","NinjaFrog",32,32,True)
         sprites = self.SPRITES['idle_left']  # Assuming 'idle_left' is the default state
         self.sprite = sprites[0]  # Default to the first frame of the idle animation
+        self.centerx = self.rect.centerx
+        self.centery = self.rect.centery
+
 
     def jump(self):
         self.y_vel = -self.GRAVITY * 8
@@ -110,26 +114,42 @@ class Player(pygame.sprite.Sprite):
         self.y_vel *= -1
 
     def update_sprite(self):
-        sprite_sheet = "idle"
-        if self.y_vel < 0:
-            if self.jump_count == 1:
-                sprite_sheet = "jump"
-            elif self.jump_count == 2:
-                sprite_sheet = "double_jump"
-        elif self.y_vel > self.GRAVITY * 2:
-            sprite_sheet = "fall"
-        elif self.x_vel != 0:
-            sprite_sheet = "run"
-        
-        sprite_sheet_name = sprite_sheet + "_" + self.direction
-        sprites = self.SPRITES[sprite_sheet_name]
-        sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
-        self.sprite = sprites[sprite_index]
-        self.animation_count += 1
-        self.update()
+        if self.appearing:  # Handle the appearing animation
+            sprite_sheet = load_sprite_sheets("MainCharacters", "AppDisapp", 96, 96, False)
+            sprites = sprite_sheet["appearing"]
+            sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
+            self.sprite = sprites[sprite_index]
+            self.animation_count += 1
+            self.update()
+            
+            if sprite_index >= len(sprites)-1:  # End of appearing animation
+                self.appearing = False  # Exit appearing state
+                self.animation_count = 0  # Reset the animation count for normal animations
+                sprite_sheet = "idle"  # Transition to idle state after appearing
+                sprites = self.SPRITES[sprite_sheet + "_" + self.direction]
+            self.sprite = sprites[sprite_index % len(sprites)]  # Loop if necessary
+            self.update()
+        else:
+            sprite_sheet = "idle"
+            if self.y_vel < 0:
+                if self.jump_count == 1:
+                    sprite_sheet = "jump"
+                elif self.jump_count == 2:
+                    sprite_sheet = "double_jump"
+            elif self.y_vel > self.GRAVITY * 2:
+                sprite_sheet = "fall"
+            elif self.x_vel != 0:
+                sprite_sheet = "run"
+            
+            sprite_sheet_name = sprite_sheet + "_" + self.direction
+            sprites = self.SPRITES[sprite_sheet_name]
+            sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
+            self.sprite = sprites[sprite_index]
+            self.animation_count += 1
+            self.update()
 
     def update(self):
-        self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.rect = self.sprite.get_rect(center=(self.rect.centerx, self.rect.centery))
         self.mask = pygame.mask.from_surface(self.sprite)
 
     def draw(self,win, offset_x):
@@ -225,13 +245,30 @@ def handle_vertical_collision(player, objects, dy):
 
     return collided_objects
 
+
+def collide(player,objects,dx):
+    player.move(dx,0)
+    player.update()
+    collided_object = None
+    for obj in objects:
+        if pygame.sprite.collide_mask(player,obj):
+            collided_object = obj
+            break
+
+    player.move(-dx, 0)
+    player.update()
+    return collided_object
+
 def handle_move(player, objects):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
-    if keys[pygame.K_LEFT]:
+    collide_left = collide(player,objects,-PLAYER_VEL*2)
+    collide_right = collide(player,objects,PLAYER_VEL*2)
+
+    if keys[pygame.K_LEFT] and not collide_left:
         player.move_left(PLAYER_VEL)
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] and not collide_right:
         player.move_right(PLAYER_VEL)
 
     handle_vertical_collision(player, objects, player.y_vel)
@@ -249,6 +286,8 @@ def main(window):
     fire.on()
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
     objects = [*floor, fire]
+   
+
 
     offset_x = 0
     scroll_area_width = 300
