@@ -111,7 +111,7 @@ class Player(pygame.sprite.Sprite):
 
     def update_sprite(self):
         sprite_sheet = "idle"
-        if self.y_vel != 0:
+        if self.y_vel < 0:
             if self.jump_count == 1:
                 sprite_sheet = "jump"
             elif self.jump_count == 2:
@@ -180,6 +180,7 @@ def draw(window, background, bg_image, player, objects, offset_x):
     pygame.display.update()
 
 
+
 def handle_vertical_collision(player, objects, dy):
     collided_objects = []
     for obj in objects:
@@ -191,7 +192,7 @@ def handle_vertical_collision(player, objects, dy):
                 player.rect.top = obj.rect.bottom
                 player.hit_head()
 
-        collided_objects.append(obj)
+            collided_objects.append(obj)
 
     return collided_objects
 
@@ -217,16 +218,19 @@ def main(window):
     Player1 = Player(100, 100, 50, 50)
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
    
+    objects = [*floor, Block(0, HEIGHT - block_size * 2, block_size)]
+
+
     offset_x = 0
-    scroll_area_width = 500
+    scroll_area_width = 300
 
     run = True
     while run:
         clock.tick(FPS)
 
         Player1.loop(FPS)
-        handle_move(Player1, floor)
-        draw(window, background, bg_image, Player1, floor, offset_x)
+        handle_move(Player1, objects)
+        draw(window, background, bg_image, Player1, objects, offset_x)
         
         if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and Player1.x_vel > 0) or 
             (Player1.rect.left - offset_x <= scroll_area_width and Player1.x_vel < 0)):
