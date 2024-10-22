@@ -34,6 +34,12 @@ class Player(pygame.sprite.Sprite):
         if self.jump_count == 1:
             self.fall_count = 0
 
+    def highjump(self):
+        self.y_vel = -self.GRAVITY * 16
+        self.animation_count = 0
+        self.jump_count = 1
+        self.fall_count = 0
+
     def move(self,dx,dy):
         self.rect.x+=dx
         self.rect.y+=dy
