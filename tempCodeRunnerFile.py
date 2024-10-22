@@ -1,1 +1,1 @@
-GRAVITY
+print

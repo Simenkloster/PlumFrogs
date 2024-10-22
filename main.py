@@ -1,9 +1,9 @@
-import os
-import random
-import math
 import pygame
-from os import listdir
-from os.path import isfile, join
+from Player import Player
+from Block import Block
+from Fire import Fire
+from sprite_functions import *
+from movement_functions import *
 pygame.init()
 
 pygame.display.set_caption("Platformer")
@@ -12,315 +12,31 @@ pygame.display.set_caption("Platformer")
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
 PLAYER_VEL = 5
-
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-def flip(sprites):
-    return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
-def load_sprite_sheets(dir1, dir2, width, height, direction=False):
-    path = join("assets", dir1, dir2)
-    images = [f for f in listdir(path) if isfile(join(path, f))]
-
-    all_sprites = {}
-
-    for image in images:
-        sprite_sheet = pygame.image.load(join(path, image)).convert_alpha()
-
-        sprites = []
-        for i in range(sprite_sheet.get_width() // width):
-            surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
-            rect = pygame.Rect(i * width, 0, width, height)
-            surface.blit(sprite_sheet, (0, 0), rect)
-            sprites.append(pygame.transform.scale2x(surface))
-
-        if direction:
-            all_sprites[image.replace(".png", "") + "_right"] = sprites
-            all_sprites[image.replace(".png", "") + "_left"] = flip(sprites)
-        else:
-            all_sprites[image.replace(".png", "")] = sprites
-
-    return all_sprites
-
-
-def get_block(size):
-    path = join("assets", "Terrain", "Terrain.png")
-    image = pygame.image.load(path).convert_alpha()
-    surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
-    rect = pygame.Rect(96, 0, size, size)
-    surface.blit(image, (0, 0), rect)
-    return pygame.transform.scale2x(surface)
-
-class Player(pygame.sprite.Sprite):
-    COLOR = (0,200,255)
-    GRAVITY = 1
-    ANIMATION_DELAY = 3
-
-
-    def __init__(self,x,y,width,height):
-        super().__init__()
-        self.rect = pygame.Rect(x,y,width,height)
-        self.x_vel = 0
-        self.y_vel = 0
-        self.mask = None
-        self.direction = 'left'
-        self.animation_count = 0
-        self.fall_count = 0
-        self.jump_count = 0
-        self.appearing = True
-        self.SPRITES = load_sprite_sheets("MainCharacters","NinjaFrog",32,32,True)
-        self.hit = False
-        self.hit_count = 0
-        sprites = self.SPRITES['idle_left']  # Assuming 'idle_left' is the default state
-        self.sprite = sprites[0]  # Default to the first frame of the idle animation
-        self.centerx = self.rect.centerx
-        self.centery = self.rect.centery
-
-
-    def jump(self):
-        self.y_vel = -self.GRAVITY * 8
-        self.animation_count = 0
-        self.jump_count += 1
-        if self.jump_count == 1:
-            self.fall_count = 0
-
-    def move(self,dx,dy):
-        self.rect.x+=dx
-        self.rect.y+=dy
-
-    def make_hit(self):
-        self.hit = True
-        self.hit_count = 0
-        
-    def move_left(self,vel):
-        self.x_vel= -vel
-        if self.direction != 'left':
-            self.direction = 'left'
-            self.animation_count = 0
-
-    def move_right(self,vel):
-        self.x_vel = vel
-        if self.direction != 'right':
-            self.direction = 'right'
-            self.animation_count = 0
-
-    def loop(self,fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
-        self.move(self.x_vel,self.y_vel)
-
-        if self.hit:
-            self.hit_count += 1
-        if self.hit_count > fps * 2:
-            self.hit = False
-            self.hit_count = 0
-
-        self.fall_count += 1
-        self.update_sprite()
-
-    def landed(self):
-        self.fall_count = 0
-        self.y_vel = 0
-        self.jump_count = 0
-
-    def hit_head(self):
-        self.count = 0
-        self.y_vel *= -1
-
-    def update_sprite(self):
-        if self.appearing:  # Handle the appearing animation
-            sprite_sheet = load_sprite_sheets("MainCharacters", "AppDisapp", 96, 96, False)
-            sprites = sprite_sheet["appearing"]
-            sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
-            self.sprite = sprites[sprite_index]
-            self.animation_count += 1
-            self.update()
-            
-            if sprite_index >= len(sprites)-1:  # End of appearing animation
-                self.appearing = False  # Exit appearing state
-                self.animation_count = 0  # Reset the animation count for normal animations
-                sprite_sheet = "idle"  # Transition to idle state after appearing
-                sprites = self.SPRITES[sprite_sheet + "_" + self.direction]
-            self.sprite = sprites[sprite_index % len(sprites)]  # Loop if necessary
-            self.update()
-        else:
-            sprite_sheet = "idle"
-            if self.y_vel < 0:
-                if self.jump_count == 1:
-                    sprite_sheet = "jump"
-                elif self.jump_count == 2:
-                    sprite_sheet = "double_jump"
-            elif self.y_vel > self.GRAVITY * 2:
-                sprite_sheet = "fall"
-            elif self.x_vel != 0:
-                sprite_sheet = "run"
-            
-            sprite_sheet_name = sprite_sheet + "_" + self.direction
-            sprites = self.SPRITES[sprite_sheet_name]
-            sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
-            self.sprite = sprites[sprite_index]
-            self.animation_count += 1
-            self.update()
-        sprite_sheet = "idle"
-        if self.hit:
-            sprite_sheet = "hit"
-        elif self.y_vel < 0:
-            if self.jump_count == 1:
-                sprite_sheet = "jump"
-            elif self.jump_count == 2:
-                sprite_sheet = "double_jump"
-        elif self.y_vel > self.GRAVITY * 2:
-            sprite_sheet = "fall"
-        elif self.x_vel != 0:
-            sprite_sheet = "run"
-        
-        sprite_sheet_name = sprite_sheet + "_" + self.direction
-        sprites = self.SPRITES[sprite_sheet_name]
-        sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
-        self.sprite = sprites[sprite_index]
-        self.animation_count += 1
-        self.update()
-
-    def update(self):
-        self.rect = self.sprite.get_rect(center=(self.rect.centerx, self.rect.centery))
-        self.mask = pygame.mask.from_surface(self.sprite)
-
-    def draw(self,win, offset_x):
-        win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
-
-class Object(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, name=None):
-        super().__init__()
-        self.rect = pygame.Rect(x, y, width, height)
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        self.width = width
-        self.height = height
-        self.name = name
-    
-    def draw(self, win, offset_x):
-        win.blit(self.image, (self.rect.x - offset_x, self.rect.y))
-
-class Block(Object):
-    def __init__(self, x, y, size):
-        super().__init__(x, y, size, size)
-        block = get_block(size)
-        self.image.blit(block, (0, 0))
-        self.mask = pygame.mask.from_surface(self.image)
-
-
-class Fire(Object):
-    ANIMATION_DELAY = 3
-
-    def __init__(self,x,y,width,height):
-        super().__init__(x,y,width,height, "fire")
-        self.fire = load_sprite_sheets("Traps","Fire",width,height)
-        self.image = self.fire["off"][0]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.animation_count = 0
-        self.animation_name = "off"
-
-    def on(self):
-        self.animation_name = "on"
-    
-    def off(self):
-        self.animation_name = "off"
-        
-    def loop(self):
-        sprites = self.fire[self.animation_name]
-        sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
-        self.image = sprites[sprite_index]
-        self.animation_count += 1
-
-        self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.image)
-
-        if self.animation_count // self.ANIMATION_DELAY > len(sprites):
-            self.animation_count = 0
-
-# Lage background
-def get_background(name):
-    image = pygame.image.load(join("assets", "Background", name))
-    _, _, width, height = image.get_rect()
-    tiles = []
-    
-    for i in range(WIDTH // width + 1):
-        for j in range (HEIGHT // height + 1):
-            pos = [i * width, j * height]
-            tiles.append(pos)
-    
-    return tiles, image
-
-#Tegne background
-def draw(window, background, bg_image, player, objects, offset_x):
-    for tile in background:
-        window.blit(bg_image, tuple(tile))
-    
-    for obj in objects:
-        obj.draw(window, offset_x)
-
-    player.draw(window, offset_x)
-
-    pygame.display.update()
-
-
-def handle_vertical_collision(player, objects, dy):
-    collided_objects = []
-    for obj in objects:
-        if pygame.sprite.collide_mask(player, obj):
-            if dy > 0:
-                player.rect.bottom = obj.rect.top
-                player.landed()
-            elif dy < 0:
-                player.rect.top = obj.rect.bottom
-                player.hit_head()
-
-        collided_objects.append(obj)
-
-    return collided_objects
-
-
-def collide(player,objects,dx):
-    player.move(dx,0)
-    player.update()
-    collided_object = None
-    for obj in objects:
-        if pygame.sprite.collide_mask(player,obj):
-            collided_object = obj
-            break
-
-    player.move(-dx, 0)
-    player.update()
-    return collided_object
-
-def handle_move(player, objects):
-    keys = pygame.key.get_pressed()
-
-    player.x_vel = 0
-    collide_left = collide(player,objects,-PLAYER_VEL*2)
-    collide_right = collide(player,objects,PLAYER_VEL*2)
-
-    if keys[pygame.K_LEFT] and not collide_left:
-        player.move_left(PLAYER_VEL)
-    if keys[pygame.K_RIGHT] and not collide_right:
-        player.move_right(PLAYER_VEL)
-
-    vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
-    to_check = [collide_left, collide_right *vertical_collide]
-    for obj in to_check:
-        if obj and obj.name == "fire":
-            player.make_hit()
 
 
 def main(window):
     clock = pygame.time.Clock()
-
     block_size = 96
 
     # background collor
-    background, bg_image = get_background("Yellow.png")
+    background, bg_image = get_background("Yellow.png", WIDTH, HEIGHT)
+    
+    
+    
+    
+    #Making stuff that goes into the game
     Player1 = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
+    
+    #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
+    
+    
+    #Liste med alle tingene som inngår i spillet
     objects = [*floor, fire]
    
 
@@ -328,15 +44,20 @@ def main(window):
     offset_x = 0
     scroll_area_width = 300
 
+    #Game-loop
     run = True
     while run:
         clock.tick(FPS)
-
         Player1.loop(FPS)
         fire.loop()
-        handle_move(Player1, objects)
+        
+        #Håndterer bevegelse og kollisjon
+        handle_move(Player1, objects, PLAYER_VEL)
+        
+        #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
         
+        #Sjekker hvor spilleren er på skjermen og flytter kameraet
         if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and Player1.x_vel > 0) or 
             (Player1.rect.left - offset_x <= scroll_area_width and Player1.x_vel < 0)):
             offset_x += Player1.x_vel
