@@ -1,0 +1,9 @@
+1. Implementer klassen med de metodene som trengs
+
+2. Legg til hva som skjer når man kolliderer med tingen i movement_functions
+
+3. Legg til eventuelle nye funksjoner i player_classen
+
+4. Forsøk å lage den nye tingen i main.py og test om det funker når du legger den til på mappet
+
+5. Debug til det funker
