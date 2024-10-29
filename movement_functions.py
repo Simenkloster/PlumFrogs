@@ -47,3 +47,5 @@ def handle_move(player, objects, PLAYER_VEL):
     for obj in to_check:
         if obj and obj.name == "fire":
             player.make_hit()
+        if obj and obj.name=="falling_platform":
+            obj.fall()

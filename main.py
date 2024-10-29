@@ -2,6 +2,7 @@ import pygame
 from Player import Player
 from Block import Block
 from Fire import Fire
+from Falling_platform import Falling_platform
 from sprite_functions import *
 from movement_functions import *
 pygame.init()
@@ -31,13 +32,14 @@ def main(window):
     Player1 = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
+    falling_platform = Falling_platform(1000, HEIGHT - block_size - 64, 32, 10)
     
     #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
     
     
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire]
+    objects = [*floor, fire, falling_platform]
    
 
 
@@ -50,6 +52,7 @@ def main(window):
         clock.tick(FPS)
         Player1.loop(FPS)
         fire.loop()
+        falling_platform.loop()
         
         #Håndterer bevegelse og kollisjon
         handle_move(Player1, objects, PLAYER_VEL)
