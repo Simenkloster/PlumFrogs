@@ -5,6 +5,7 @@ class Player(pygame.sprite.Sprite):
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
+    HOVER_GRAVITY = 0.2
 
 
     def __init__(self,x,y,width,height):
@@ -25,6 +26,8 @@ class Player(pygame.sprite.Sprite):
         self.sprite = sprites[0]  # Default to the first frame of the idle animation
         self.centerx = self.rect.centerx
         self.centery = self.rect.centery
+        self.hovering = False
+        self.HOVER_FORCE = -2
 
 
     def jump(self):
@@ -61,7 +64,11 @@ class Player(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def loop(self,fps):
-        self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+        if self.hovering:
+            self.y_vel = self.HOVER_FORCE
+        else:
+            self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+        
         self.move(self.x_vel,self.y_vel)
 
         if self.hit:
@@ -81,6 +88,14 @@ class Player(pygame.sprite.Sprite):
     def hit_head(self):
         self.count = 0
         self.y_vel *= -1
+    
+    def hover(self):
+        if not self.hovering:
+            self.hovering = True
+            self.fall_count = 0
+    
+    def stop_hover(self):
+        self.hovering = False
 
     def update_sprite(self):
         if self.appearing:  # Handle the appearing animation

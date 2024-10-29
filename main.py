@@ -2,6 +2,9 @@ import pygame
 from Player import Player
 from Block import Block
 from Fire import Fire
+from Spike import Spike
+from Fan import Fan
+from Falling_platform import Falling_platform
 from Trampoline import Trampoline
 from sprite_functions import *
 from movement_functions import *
@@ -32,6 +35,10 @@ def main(window):
     Player1 = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
+    spike = Spike(600, HEIGHT-block_size-32, 16, 16)
+    fan = Fan(200, HEIGHT - block_size - 16, 24, 8)
+    fan.on()
+    falling_platform = Falling_platform(1000, HEIGHT - block_size - 64, 32, 10)
 
     trampoline = Trampoline(200, HEIGHT - block_size - 56, 28, 28)
     
@@ -40,7 +47,8 @@ def main(window):
     
     
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire,trampoline]
+
+    objects = [*floor, fire, falling_platform, spike, fan, trampoline]
    
 
 
@@ -53,9 +61,17 @@ def main(window):
         clock.tick(FPS)
         Player1.loop(FPS)
         fire.loop()
+        fan.loop()
+        falling_platform.loop()
+        
         trampoline.loop()
         #Håndterer bevegelse og kollisjon
         handle_move(Player1, objects, PLAYER_VEL)
+
+        if Player1.rect.x == fan.rect.x:
+            Player1.hover()
+        else:
+            Player1.stop_hover()
         
         #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
