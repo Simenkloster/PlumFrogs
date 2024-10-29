@@ -4,9 +4,10 @@ from sprite_functions import load_sprite_sheets
 
 class Falling_platform(Object): # 32 x 10
     ANIMATION_DELAY = 3
+    GRAVITY = 1
 
     def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height, "falling platforms")
+        super().__init__(x, y, width, height, "falling_platform")
         self.falling_platforms = load_sprite_sheets("Traps","Falling Platforms",width,height)
         self.image = self.falling_platforms["On"][0]
         self.mask = pygame.mask.from_surface(self.image)
@@ -14,17 +15,20 @@ class Falling_platform(Object): # 32 x 10
         self.animation_name = "On"
         self.fall_time = 0
         self.falling = False
-        self.fall_distance = 0
+        self.fall_count = 0
         self.x = x
         self.y = y
+        self.y_vel = 0
 
-    def fall(self, fall_time):
-        if not self.falling:
-            self.fall_time = fall_time
-            self.fall_distance = fall_time * 10
-            self.falling = True
+    def start_falling(self):
+        print("kjører start dallign")
+        self.falling = True
+
+    def move(self, dy):
+        self.rect.y+=dy
         
     def loop(self):
+        self.move(self.y_vel)
         sprites = self.falling_platforms[self.animation_name]
         sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
         self.image = sprites[sprite_index]
@@ -39,9 +43,7 @@ class Falling_platform(Object): # 32 x 10
         if self.fall_time >= 1:
             self.fall_time -= 1
             self.y += 10
-        
-        if self.falling and self.fall_time < 1:
-            self.falling = False
-            self.y -= self.fall_distance
-            self.fall_distance = 0
-        print(self.y)
+
+        if self.falling:
+            self.fall_count+=1
+            self.y_vel += min(1, (self.fall_count / 60) * self.GRAVITY)

@@ -47,13 +47,13 @@ def handle_move(player, objects, PLAYER_VEL):
     for obj in to_check:
         if obj and obj.name == "fire":
             player.make_hit()
-<<<<<<< HEAD
         if obj and obj.name == "trampoline":
             player.highjump()
             obj.activated()
-=======
         if obj and obj.name == "spikes":
             player.make_hit()
         if obj and obj.name=="falling_platform":
-            obj.fall()
->>>>>>> 0024c89973b8577eea322e4270037208d914b70d
+            obj.start_falling()
+            player.landed()
+        if obj and obj.name == "fan":
+            player.hover()

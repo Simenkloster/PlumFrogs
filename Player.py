@@ -6,6 +6,7 @@ class Player(pygame.sprite.Sprite):
     GRAVITY = 1
     ANIMATION_DELAY = 3
     HOVER_GRAVITY = 0.2
+    HOVER_DURATION = 1
 
 
     def __init__(self,x,y,width,height):
@@ -27,7 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.centerx = self.rect.centerx
         self.centery = self.rect.centery
         self.hovering = False
-        self.HOVER_FORCE = -2
+        self.HOVER_FORCE = -4
+        self.hover_timer = 0
 
 
     def jump(self):
@@ -65,7 +67,11 @@ class Player(pygame.sprite.Sprite):
 
     def loop(self,fps):
         if self.hovering:
-            self.y_vel = self.HOVER_FORCE
+            if self.hover_timer > 0:
+                self.y_vel = self.HOVER_FORCE
+                self.hover_timer -= 1
+            else:
+                self.stop_hover()
         else:
             self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
         
@@ -92,10 +98,15 @@ class Player(pygame.sprite.Sprite):
     def hover(self):
         if not self.hovering:
             self.hovering = True
-            self.fall_count = 0
+            self.hover_timer = self.HOVER_DURATION * 60
+        self.fall_count = 0
+
+
+            
     
     def stop_hover(self):
         self.hovering = False
+        self.hover_timer = 0
 
     def update_sprite(self):
         if self.appearing:  # Handle the appearing animation
@@ -118,7 +129,7 @@ class Player(pygame.sprite.Sprite):
             if self.hit:
                 sprite_sheet = "hit"
             elif self.y_vel < 0:
-                if self.jump_count == 1:
+                if self.jump_count == 1 or self.hovering:
                     sprite_sheet = "jump"
                 elif self.jump_count == 2:
                     sprite_sheet = "double_jump"
