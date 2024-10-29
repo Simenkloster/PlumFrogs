@@ -2,6 +2,7 @@ import pygame
 from Player import Player
 from Block import Block
 from Fire import Fire
+from Spike import Spike
 from Fan import Fan
 from sprite_functions import *
 from movement_functions import *
@@ -32,6 +33,7 @@ def main(window):
     Player1 = Player(100, 100, 50, 50)
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
+    spike = Spike(600, HEIGHT-block_size-32, 16, 16)
     fan = Fan(200, HEIGHT - block_size - 16, 24, 8)
     fan.on()
     
@@ -40,7 +42,7 @@ def main(window):
     
     
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire, fan]
+    objects = [*floor, fire, spike, fan]
    
 
 
