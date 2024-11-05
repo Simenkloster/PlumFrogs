@@ -67,6 +67,7 @@ class Player(pygame.sprite.Sprite):
 
     def loop(self,fps):
         if self.hovering:
+            self.jump_count = 1
             if self.hover_timer > 0:
                 self.y_vel = self.HOVER_FORCE
                 self.hover_timer -= 1

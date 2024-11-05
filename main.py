@@ -41,7 +41,7 @@ def main(window):
     spike = Spike(600, HEIGHT-block_size-32, 16, 16)
     fan = Fan(200, HEIGHT - block_size - 16, 24, 8)
     fan.on()
-    falling_platform = Falling_platform(400, 200, 32, 10)
+    falling_platforms = [Falling_platform(80*i, 350, 32, 10) for i in range(8, 20)]
 
     trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
     
@@ -51,7 +51,7 @@ def main(window):
     
     #Liste med alle tingene som inngår i spillet
 
-    objects = [*floor, fire, falling_platform, spike, fan, trampoline]
+    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline]
    
 
 
@@ -65,7 +65,9 @@ def main(window):
         Player1.loop(FPS)
         fire.loop()
         fan.loop()
-        falling_platform.loop()
+        
+        for platform in falling_platforms:
+            platform.loop()
         
         
         trampoline.loop()
