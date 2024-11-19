@@ -45,7 +45,11 @@ def main(window):
     #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline]
+
+    #Spikehead
+    spikehead = Spikehead(-100, 600, 54,  52)
+
+    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, spikehead]
    
    
    
@@ -61,6 +65,7 @@ def main(window):
         Player1.loop(FPS)
         fire.loop()
         fan.loop()
+        spikehead.loop()
         
         for platform in falling_platforms:
             platform.loop()
