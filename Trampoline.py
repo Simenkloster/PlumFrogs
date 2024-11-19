@@ -2,9 +2,9 @@ from Object import Object
 import pygame
 from sprite_functions import load_sprite_sheets
 
-class Trampoline(Object): #28 x 28
+class Trampoline(Object): # 28 x 28
 
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width=28,height=28):
         super().__init__(x,y,width,height, "trampoline")
         self.trampoline = load_sprite_sheets("Traps","Trampoline",width,height)
         self.image = self.trampoline["Idle"][0]

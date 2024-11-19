@@ -52,6 +52,10 @@ class Player(pygame.sprite.Sprite):
     def make_hit(self):
         self.hit = True
         self.hit_count = 0
+
+    def respawn(self, spawnpoint):
+        self.rect.x = spawnpoint[0]
+        self.rect.y = spawnpoint[1]
         
     def move_left(self,vel):
         self.x_vel= -vel
