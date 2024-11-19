@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
     HOVER_GRAVITY = 0.2
     HOVER_DURATION = 1
     INVINCIBLE_DURATION = 120
+    SUPERSPEED_TIMER = 300
 
     def __init__(self,x,y,width,height):
         super().__init__()
@@ -37,6 +38,9 @@ class Player(pygame.sprite.Sprite):
         self.lives = 3
         self.invincible = False
         self.invincible_timer = 0
+        self.super_speed_active = False
+        self.speed_timer = 0
+        self.vel = 5
 
 
     def jump(self):
@@ -84,6 +88,10 @@ class Player(pygame.sprite.Sprite):
         if self.direction != 'right':
             self.direction = 'right'
             self.animation_count = 0
+    
+    def activate_speed(self):
+        self.super_speed_active = True
+        self.speed_timer = self.SUPERSPEED_TIMER
 
     def loop(self,fps):
         if self.hovering:
@@ -113,6 +121,13 @@ class Player(pygame.sprite.Sprite):
         if self.lives <= 0:
             self.respawn()
         self.update_sprite()
+
+        if self.super_speed_active:
+            self.vel = 8
+            self.speed_timer -= 1
+            if self.speed_timer <= 0:
+                self.super_speed_active = False
+                self.vel = 5
 
     def landed(self):
         self.fall_count = 0

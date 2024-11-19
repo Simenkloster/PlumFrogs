@@ -30,17 +30,17 @@ def collide(player,objects,dx):
     player.update()
     return collided_object
 
-def handle_move(player, objects, PLAYER_VEL):
+def handle_move(player, objects):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
-    collide_left = collide(player,objects,-PLAYER_VEL*2)
-    collide_right = collide(player,objects,PLAYER_VEL*2)
+    collide_left = collide(player,objects,-player.vel*2)
+    collide_right = collide(player,objects,player.vel*2)
 
     if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and not collide_left:
-        player.move_left(PLAYER_VEL)
+        player.move_left(player.vel)
     if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and not collide_right:
-        player.move_right(PLAYER_VEL)
+        player.move_right(player.vel)
 
     vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
     to_check = [collide_left, collide_right, *vertical_collide]
@@ -52,8 +52,10 @@ def handle_move(player, objects, PLAYER_VEL):
             obj.activated()
         if obj and obj.name == "spikes":
             player.make_hit()
-        if obj and obj.name=="falling_platform":
+        if obj and obj.name == "falling_platform":
             obj.start_falling()
             player.landed()
         if obj and obj.name == "fan":
             player.hover()
+        if obj and obj.name == "pineapple":
+            player.activate_speed()

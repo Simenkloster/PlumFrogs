@@ -6,6 +6,7 @@ from Spike import Spike
 from Fan import Fan
 from Falling_platform import Falling_platform
 from Trampoline import Trampoline
+from Pineapple import Pineapple
 from sprite_functions import *
 from movement_functions import *
 pygame.init()
@@ -27,7 +28,7 @@ def main(window):
     clock = pygame.time.Clock()
     block_size = 96
 
-    # background collor
+    # background image
     background, bg_image = get_background("Yellow.png", WIDTH, HEIGHT)
     
     
@@ -42,10 +43,11 @@ def main(window):
     fan.on()
     falling_platforms = [Falling_platform(80*i, 350, 32, 10) for i in range(8, 20)]
     trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
+    pineapple = Pineapple(700, HEIGHT - block_size - 64, 32, 32)
     #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline]
+    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, pineapple]
    
    
    
@@ -61,6 +63,7 @@ def main(window):
         Player1.loop(FPS)
         fire.loop()
         fan.loop()
+        pineapple.loop()
         
         for platform in falling_platforms:
             platform.loop()
@@ -68,7 +71,7 @@ def main(window):
         
         trampoline.loop()
         #Håndterer bevegelse og kollisjon
-        handle_move(Player1, objects, PLAYER_VEL)
+        handle_move(Player1, objects)
         
         #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
