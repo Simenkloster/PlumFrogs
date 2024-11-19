@@ -10,6 +10,8 @@ from sprite_functions import *
 from movement_functions import *
 pygame.init()
 
+heart = pygame.image.load('heart.png')
+heart = pygame.transform.scale(heart,(40,40))
 pygame.display.set_caption("Platformer")
 
 
@@ -33,25 +35,19 @@ def main(window):
     
     #Making stuff that goes into the game
     Player1 = Player(100, 100, 50, 50)
-
-
-
     fire = Fire(100, HEIGHT - block_size - 64, 16, 32)
     fire.on()
     spike = Spike(600, HEIGHT-block_size-32, 16, 16)
     fan = Fan(200, HEIGHT - block_size - 16, 24, 8)
     fan.on()
     falling_platforms = [Falling_platform(80*i, 350, 32, 10) for i in range(8, 20)]
-
     trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
-    
     #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
-    
-    
     #Liste med alle tingene som inngår i spillet
-
     objects = [*floor, fire, *falling_platforms, spike, fan, trampoline]
+   
+   
    
 
 
@@ -77,6 +73,15 @@ def main(window):
         #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
         
+        dynamic_x = 0
+        for i in range(Player1.lives):
+            dynamic_x+=45
+            window.blit(heart,(dynamic_x,30))
+        if Player1.lives == 0:
+            offset_x = 0
+        
+        pygame.display.update()
+
         #Sjekker hvor spilleren er på skjermen og flytter kameraet
         if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and Player1.x_vel > 0) or 
             (Player1.rect.left - offset_x <= scroll_area_width and Player1.x_vel < 0)):

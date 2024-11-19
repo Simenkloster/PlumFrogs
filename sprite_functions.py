@@ -58,5 +58,3 @@ def draw(window, background, bg_image, player, objects, offset_x):
         obj.draw(window, offset_x)
 
     player.draw(window, offset_x)
-
-    pygame.display.update()

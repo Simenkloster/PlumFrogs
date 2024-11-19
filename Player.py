@@ -7,10 +7,14 @@ class Player(pygame.sprite.Sprite):
     ANIMATION_DELAY = 3
     HOVER_GRAVITY = 0.2
     HOVER_DURATION = 1
-
+    INVINCIBLE_DURATION = 120
 
     def __init__(self,x,y,width,height):
         super().__init__()
+        self.spawn_x = x
+        self.spawn_y = y
+        self.width = width
+        self.height = height
         self.rect = pygame.Rect(x,y,width,height)
         self.x_vel = 0
         self.y_vel = 0
@@ -30,6 +34,9 @@ class Player(pygame.sprite.Sprite):
         self.hovering = False
         self.HOVER_FORCE = -4
         self.hover_timer = 0
+        self.lives = 3
+        self.invincible = False
+        self.invincible_timer = 0
 
 
     def jump(self):
@@ -52,11 +59,20 @@ class Player(pygame.sprite.Sprite):
     def make_hit(self):
         self.hit = True
         self.hit_count = 0
+        self.take_damage()
 
-    def respawn(self, spawnpoint):
-        self.rect.x = spawnpoint[0]
-        self.rect.y = spawnpoint[1]
-        
+    def take_damage(self):
+        if not self.invincible:
+            self.lives -= 1
+            self.invincible = True
+            self.invincible_timer = self.INVINCIBLE_DURATION
+    
+    def respawn(self):
+        self.rect = pygame.Rect(self.spawn_x,self.spawn_y,self.width,self.height)
+        self.lives = 3
+        self.animation_count = 0
+        self.appearing = True
+
     def move_left(self,vel):
         self.x_vel= -vel
         if self.direction != 'left':
@@ -89,6 +105,13 @@ class Player(pygame.sprite.Sprite):
             self.hit_count = 0
 
         self.fall_count += 1
+        if self.invincible:
+            self.invincible_timer -= 1
+            if self.invincible_timer <= 0:
+                self.invincible = False
+
+        if self.lives <= 0:
+            self.respawn()
         self.update_sprite()
 
     def landed(self):
@@ -129,6 +152,7 @@ class Player(pygame.sprite.Sprite):
                 sprites = self.SPRITES[sprite_sheet + "_" + self.direction]
             self.sprite = sprites[sprite_index % len(sprites)]  # Loop if necessary
             self.update()
+        
         else:
             sprite_sheet = "idle"
             if self.hit:
@@ -142,6 +166,7 @@ class Player(pygame.sprite.Sprite):
                 sprite_sheet = "fall"
             elif self.x_vel != 0:
                 sprite_sheet = "run"
+
             
             sprite_sheet_name = sprite_sheet + "_" + self.direction
             sprites = self.SPRITES[sprite_sheet_name]
