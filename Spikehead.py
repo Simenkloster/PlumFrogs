@@ -39,9 +39,6 @@ class Spikehead(Object):
         self.animation_name = "Idle"
         self.animation_count = 0
 
-    def play_hit_animation(self):
-        self.animation_name = "Hit"
-        self.animation_count = 0
 
     def blink(self):
         self.animation_name = "Blink"
