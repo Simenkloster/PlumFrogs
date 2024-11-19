@@ -2,10 +2,10 @@ from Object import Object
 import pygame
 from sprite_functions import load_sprite_sheets
 
-class Fire(Object):
+class Fire(Object): # 16 x 32
     ANIMATION_DELAY = 3
 
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width=16,height=32):
         super().__init__(x,y,width,height, "fire")
         self.fire = load_sprite_sheets("Traps","Fire",width,height)
         self.image = self.fire["off"][0]

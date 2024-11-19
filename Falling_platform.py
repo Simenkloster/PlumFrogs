@@ -6,7 +6,7 @@ class Falling_platform(Object): # 32 x 10
     ANIMATION_DELAY = 3
     GRAVITY = 1
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width=32, height=10):
         super().__init__(x, y, width, height, "falling_platform")
         self.falling_platforms = load_sprite_sheets("Traps","Falling Platforms",width,height)
         self.image = self.falling_platforms["On"][0]
@@ -16,13 +16,14 @@ class Falling_platform(Object): # 32 x 10
         self.fall_time = 0
         self.falling = False
         self.fall_count = 0
+        self.start_y = self.rect.y
         self.x = x
         self.y = y
         self.y_vel = 0
 
-    def start_falling(self):
-        print("kjører start dallign")
+    def start_falling(self, fall_time=-1):
         self.falling = True
+        self.fall_time = fall_time
 
     def move(self, dy):
         self.rect.y+=dy
@@ -44,6 +45,15 @@ class Falling_platform(Object): # 32 x 10
             self.fall_time -= 1
             self.y += 10
 
+        if self.fall_time == -1:
+            self.y += 10
+
+        if self.fall_time == 0:
+            self.falling = False
+            self.y_vel = 0
+            self.rect.y = self.start_y
+            self.fall_count = 0
+
         if self.falling:
             self.fall_count+=1
-            self.y_vel += min(1, (self.fall_count / 60) * self.GRAVITY)
+            self.y_vel += min(1, (self.fall_count / 60) * self.GRAVITY)            
