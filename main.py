@@ -5,6 +5,7 @@ from Fire import Fire
 from Spike import Spike
 from Fan import Fan
 from Falling_platform import Falling_platform
+from Spikehead import Spikehead
 from Trampoline import Trampoline
 from sprite_functions import *
 from movement_functions import *
