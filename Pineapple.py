@@ -6,14 +6,14 @@ class Pineapple(Object): # 16 x 16?
     ANIMATION_DELAY = 6
     def __init__(self,x,y,width,height):
         super().__init__(x,y,width,height, "pineapple")
-        self.pineappel =load_sprite_sheets("Fruits","Pineapple",width,height)
-        self.image = self.pineappel["Pineapple"][0]
+        self.pineapple =load_sprite_sheets("Fruits","Pineapple",width,height)
+        self.image = self.pineapple["Pineapple"][0]
         self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
         self.animation_name = "Pineapple"
     
     def loop(self):
-        sprites = self.pineappel[self.animation_name]
+        sprites = self.pineapple[self.animation_name]
         sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
         self.image = sprites[sprite_index]
         self.animation_count += 1

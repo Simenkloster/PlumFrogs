@@ -39,7 +39,7 @@ def main(window):
 
 
     #Importing level
-    from mi_level import objects, loopable
+    from sindre_sitt_nivå import objects, loopable
 
 
     offset_x = 0
