@@ -53,7 +53,7 @@ def handle_move(player, objects, PLAYER_VEL):
         if obj and obj.name == "spikes":
             player.make_hit()
         if obj and obj.name=="falling_platform":
-            obj.start_falling()
+            obj.start_falling(250)
             player.landed()
         if obj and obj.name == "fan":
             player.hover()
