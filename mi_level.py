@@ -32,5 +32,5 @@ floor2wall = [Block(10*block_size, HEIGHT - (2 + i) * block_size, block_size) fo
 
 
 #Liste med alle tingene som inngår i spillet
-
+loopable = [fan,cherry,fire,falling_platform,trampoline]
 objects = [*floor,*floor2,*floor2wall,*floor3,wallfloor3, fire, falling_platform, spike,spike2, fan, trampoline,cherry]
