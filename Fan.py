@@ -2,9 +2,9 @@ from Object import Object
 import pygame
 from sprite_functions import load_sprite_sheets
 
-class Fan(Object): #24 x 8
+class Fan(Object): # 24 x 8
     ANIMATION_DELAY = 4
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width=24,height=8):
         super().__init__(x,y,width,height, "fan")
         self.fan = load_sprite_sheets("Traps","Fan",width,height)
         self.image = self.fan["Off"][0]

@@ -119,6 +119,10 @@ class Player(pygame.sprite.Sprite):
         self.y_vel = 0
         self.jump_count = 0
 
+    def bump_left(self):
+        pass
+        #Skal lage denne senere
+
     def hit_head(self):
         self.count = 0
         self.y_vel *= -1

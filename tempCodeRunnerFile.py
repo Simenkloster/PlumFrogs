@@ -1,1 +1,1 @@
-print
+ni
