@@ -28,3 +28,9 @@ blocks = [Block(96*7, HEIGHT-96), Block(96*-24, HEIGHT-96), Block(96*-25, HEIGHT
 loopable = [*falling_platforms, *fires, *trampolines, *fans]
 objects = [*loopable, *blocks, *spikes]
 player_pos = [100, HEIGHT-146]
+
+
+for fan in fans:
+    fan.on()
+for fire in fires:
+    fire.on()
