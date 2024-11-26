@@ -5,10 +5,11 @@ def handle_vertical_collision(player, objects, dy):
     collided_objects = []
     for obj in objects:
         if pygame.sprite.collide_mask(player, obj):
-            if dy > 0:
+            if dy > 0 and obj.name != "cherry":
+                
                 player.rect.bottom = obj.rect.top
                 player.landed()
-            elif dy < 0:
+            elif dy < 0 and obj.name != "cherry":
                 player.rect.top = obj.rect.bottom
                 player.hit_head()
 
@@ -37,9 +38,9 @@ def handle_move(player, objects, PLAYER_VEL):
     collide_left = collide(player,objects,-PLAYER_VEL*2)
     collide_right = collide(player,objects,PLAYER_VEL*2)
 
-    if keys[pygame.K_LEFT] and not collide_left:
+    if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and (not collide_left or collide_left.name == "cherry"):
         player.move_left(PLAYER_VEL)
-    if keys[pygame.K_RIGHT] and not collide_right:
+    if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (not collide_right or collide_right.name == "cherry"):
         player.move_right(PLAYER_VEL)
 
     vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
@@ -53,7 +54,12 @@ def handle_move(player, objects, PLAYER_VEL):
         if obj and obj.name == "spikes":
             player.make_hit()
         if obj and obj.name=="falling_platform":
-            obj.start_falling()
+            obj.start_falling(250)
             player.landed()
         if obj and obj.name == "fan":
             player.hover()
+        if obj and obj.name == "cherry":
+            if obj.isCollected == False:
+                if player.lives < 3:
+                    player.lives += 1
+                obj.collected()
