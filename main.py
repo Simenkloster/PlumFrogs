@@ -5,6 +5,7 @@ from Fire import Fire
 from Spike import Spike
 from Fan import Fan
 from Falling_platform import Falling_platform
+from Spikehead import Spikehead
 from Trampoline import Trampoline
 from sprite_functions import *
 from movement_functions import *
@@ -15,9 +16,9 @@ heart = pygame.transform.scale(heart,(40,40))
 pygame.display.set_caption("Platformer")
 
 
-WIDTH, HEIGHT = 1000, 800
+WIDTH, HEIGHT = 1200, 800
 FPS = 60
-PLAYER_VEL = 5
+PLAYER_VEL = 6
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
@@ -45,7 +46,11 @@ def main(window):
     #Liste med blocks som danner gulvet
     floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
     #Liste med alle tingene som inngår i spillet
-    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline]
+
+    #Spikehead
+    spikehead = Spikehead(-100, 600, 54,  52)
+
+    objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, spikehead]
    
    
    
@@ -54,6 +59,8 @@ def main(window):
     offset_x = 0
     scroll_area_width = 300
 
+
+
     #Game-loop
     run = True
     while run:
@@ -61,6 +68,7 @@ def main(window):
         Player1.loop(FPS)
         fire.loop()
         fan.loop()
+        spikehead.loop()
         
         for platform in falling_platforms:
             platform.loop()
@@ -68,7 +76,7 @@ def main(window):
         
         trampoline.loop()
         #Håndterer bevegelse og kollisjon
-        handle_move(Player1, objects, PLAYER_VEL)
+        handle_move(Player1, objects, PLAYER_VEL) 
         
         #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
