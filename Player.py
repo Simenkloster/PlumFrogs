@@ -2,12 +2,14 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Player(pygame.sprite.Sprite):
+    PLAYER_VEL = 5
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
     HOVER_GRAVITY = 0.2
     HOVER_DURATION = 1
     INVINCIBLE_DURATION = 120
+    SUPERSPEED_DURATION = 180
 
     def __init__(self,x,y,width,height):
         super().__init__()
@@ -37,6 +39,14 @@ class Player(pygame.sprite.Sprite):
         self.lives = 3
         self.invincible = False
         self.invincible_timer = 0
+        self.superspeed_active = False
+        self.superspeed_timer = 0
+
+    def activate_superspeed(self):
+        if not self.superspeed_active:
+            self.superspeed_active = True
+            self.superspeed_timer = self.SUPERSPEED_DURATION
+            self.PLAYER_VEL = 10
 
 
     def jump(self):
@@ -86,6 +96,14 @@ class Player(pygame.sprite.Sprite):
             self.animation_count = 0
 
     def loop(self,fps):
+
+        if self.superspeed_active:
+            self.superspeed_timer -=1
+            if self.superspeed_timer <= 0:
+                self.superspeed_active = False
+                self.PLAYER_VEL = 5
+
+
         if self.hovering:
             self.jump_count = 1
             if self.hover_timer > 0:

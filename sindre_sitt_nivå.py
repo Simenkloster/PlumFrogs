@@ -6,6 +6,7 @@ from Player import Player
 from Falling_platform import Falling_platform
 from Trampoline import Trampoline
 from Pineapple import Pineapple
+from Cherry import Cherry
 
 WIDTH, HEIGHT = 1000, 800
 block_size = 96
@@ -26,6 +27,8 @@ pineapple = Pineapple(700, HEIGHT - block_size - 64, 32, 32)
 #Liste med blocks som danner gulvet
 floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
 
+cherry = Cherry(1000, HEIGHT-block_size - 64, 32, 32)
+
 #Liste med alle tingene som inngår i spillet
-loopable = [fire, fan, pineapple, trampoline, *falling_platforms]
-objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, pineapple]
+loopable = [fire, fan, pineapple, trampoline, *falling_platforms, cherry]
+objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, pineapple, cherry]

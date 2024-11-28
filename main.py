@@ -18,7 +18,6 @@ pygame.display.set_caption("Platformer")
 
 WIDTH, HEIGHT = 1200, 800
 FPS = 60
-PLAYER_VEL = 6
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
@@ -59,7 +58,7 @@ def main(window):
         
         
         #Håndterer bevegelse og kollisjon
-        handle_move(Player1, objects, PLAYER_VEL) 
+        handle_move(Player1, objects) 
         
         #Tegner opp alt
         draw(window, background, bg_image, Player1, objects, offset_x)
@@ -70,6 +69,8 @@ def main(window):
             window.blit(heart,(dynamic_x,30))
         if Player1.lives == 0:
             offset_x = 0
+
+
         
         pygame.display.update()
 

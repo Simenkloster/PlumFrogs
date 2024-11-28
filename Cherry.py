@@ -40,4 +40,3 @@ class Cherry(Object): #544 x 32
             self.animation_name = "Collected"
             self.animation_count = 0
             self.isCollected = True
-
