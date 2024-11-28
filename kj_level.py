@@ -4,7 +4,7 @@ from Block import Block
 from Fire import Fire
 from Spike import Spike
 from Fan import Fan
-from Falling_platform import Falling_platform
+from FallingPlatform import Falling_platform
 from Trampoline import Trampoline
 HEIGHT = 800
 

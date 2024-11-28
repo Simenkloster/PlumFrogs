@@ -70,4 +70,8 @@ def handle_move(player, objects):
         if obj and obj.name == "checkpoint":
             obj.activate()
             player.update_respawn_position(obj.rect.x, obj.rect.y)
+        if obj and obj.name == "speedplatform":
+            player.activate_conveyor()
+        if obj and obj.name != "speedplatform":
+            player.deactivate_conveyor()
 

@@ -4,7 +4,7 @@ from Block import Block
 from Fire import Fire
 from Spike import Spike
 from Fan import Fan
-from Falling_platform import Falling_platform
+from FallingPlatform import Falling_platform
 from Spikehead import Spikehead
 from Trampoline import Trampoline
 from sprite_functions import *
@@ -60,7 +60,7 @@ def main(window):
         for obj in loopable:
             obj.loop()
         
-        
+        #print(Player1.x_vel)
         #Håndterer bevegelse og kollisjon
         handle_move(Player1, objects) 
         
@@ -78,10 +78,10 @@ def main(window):
         
         pygame.display.update()
 
+
         #Sjekker hvor spilleren er på skjermen og flytter kameraet
-        if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and Player1.x_vel > 0) or 
-            (Player1.rect.left - offset_x <= scroll_area_width and Player1.x_vel < 0)):
-            offset_x += Player1.x_vel
+        if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) > 0) or (Player1.rect.left - offset_x <= scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) < 0)):
+            offset_x += Player1.x_vel + Player1.conveyor_speed
 
 
         for event in pygame.event.get():

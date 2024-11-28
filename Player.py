@@ -41,6 +41,8 @@ class Player(pygame.sprite.Sprite):
         self.invincible_timer = 0
         self.superspeed_active = False
         self.superspeed_timer = 0
+        self.conveyor_active = False  # Whether the conveyor effect is active
+        self.conveyor_speed = 0 
 
     def activate_superspeed(self):
         if not self.superspeed_active:
@@ -50,11 +52,20 @@ class Player(pygame.sprite.Sprite):
 
 
     def jump(self):
+        self.deactivate_conveyor()
         self.y_vel = -self.GRAVITY * 8
         self.animation_count = 0
         self.jump_count += 1
         if self.jump_count == 1:
             self.fall_count = 0
+
+    def activate_conveyor(self):
+        self.conveyor_active = True
+        self.conveyor_speed = 4
+
+    def deactivate_conveyor(self):
+        self.conveyor_active = False
+        self.conveyor_speed = 0
 
     def highjump(self):
         self.y_vel = -self.GRAVITY * 16
@@ -111,6 +122,8 @@ class Player(pygame.sprite.Sprite):
                 self.superspeed_active = False
                 self.PLAYER_VEL = 6
 
+        if self.conveyor_active:
+            self.rect.x += self.conveyor_speed
 
         if self.hovering:
             self.jump_count = 1
@@ -121,6 +134,9 @@ class Player(pygame.sprite.Sprite):
                 self.stop_hover()
         else:
             self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
+
+
+
         
         self.move(self.x_vel,self.y_vel)
 
@@ -131,6 +147,7 @@ class Player(pygame.sprite.Sprite):
             self.hit_count = 0
 
         self.fall_count += 1
+        
         if self.invincible:
             self.invincible_timer -= 1
             if self.invincible_timer <= 0:

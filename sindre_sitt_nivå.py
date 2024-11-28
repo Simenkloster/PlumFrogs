@@ -3,11 +3,12 @@ from Spike import Spike
 from Fan import Fan
 from Block import Block
 from Player import Player
-from Falling_platform import Falling_platform
+from FallingPlatform import Falling_platform
 from Trampoline import Trampoline
-from Pineapple import Pineapple
-from Cherry import Cherry
+from Fruits.Pineapple import Pineapple
+from Fruits.Cherry import Cherry
 from Checkpoint import Checkpoint
+from SpeedPlatform import SpeedPlatform
 
 WIDTH, HEIGHT = 1000, 800
 block_size = 96
@@ -25,15 +26,17 @@ falling_platforms = [Falling_platform(80*i, 350, 32, 10) for i in range(8, 20)]
 trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
 pineapple = Pineapple(700, HEIGHT - block_size - 64, 32, 32)
 
-checkpoint1 = Checkpoint(1200, HEIGHT-block_size - 128, 64, 64)
+speedplatforms = [SpeedPlatform(64*i, HEIGHT-block_size - 128, 32, 8) for i in range(20,30)]
+
+checkpoint1 = Checkpoint(2100, HEIGHT-block_size - 128, 64, 64)
 
 checkpoint2 = Checkpoint(-400, HEIGHT - block_size - 128, 64, 64)
 
 #Liste med blocks som danner gulvet
-floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
+floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, 150)]
 
 cherry = Cherry(1000, HEIGHT-block_size - 64, 32, 32)
 
 #Liste med alle tingene som inngår i spillet
-loopable = [fire, fan, pineapple, trampoline, *falling_platforms, cherry, checkpoint1, checkpoint2]
-objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, pineapple, cherry, checkpoint1, checkpoint2]
+loopable = [fire, fan, pineapple, trampoline, *falling_platforms, cherry, checkpoint1, checkpoint2, *speedplatforms]
+objects = [*floor, fire, *falling_platforms, spike, fan, trampoline, pineapple, cherry, checkpoint1, checkpoint2, *speedplatforms]

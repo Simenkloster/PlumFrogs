@@ -3,7 +3,7 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Cherry(Object): #544 x 32
-    ANIMATION_DELAY = 4
+    ANIMATION_DELAY = 3
     def __init__(self,x,y,width,height):
         super().__init__(x,y,width,height, "cherry")
         self.cherry = load_sprite_sheets("Fruits","Cherries",width,height)

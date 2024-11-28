@@ -3,7 +3,7 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Pineapple(Object): # 16 x 16?
-    ANIMATION_DELAY = 6
+    ANIMATION_DELAY = 3
     def __init__(self,x,y,width,height):
         super().__init__(x,y,width,height, "pineapple")
         self.pineapple =load_sprite_sheets("Fruits","Pineapple",width,height)
