@@ -42,7 +42,7 @@ def main(window):
 
 
     offset_x = 0
-    scroll_area_width = 300
+    scroll_area_width = 400
 
 
 
@@ -52,6 +52,10 @@ def main(window):
         clock.tick(FPS)
         Player1.loop(FPS)
 
+
+        if Player1.rect.centery >= (HEIGHT + 200) or Player1.lives <= 0:
+            offset_x = Player1.spawn_x - (WIDTH/2)
+            Player1.respawn()
         
         for obj in loopable:
             obj.loop()

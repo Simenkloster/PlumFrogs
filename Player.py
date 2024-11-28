@@ -2,7 +2,7 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Player(pygame.sprite.Sprite):
-    PLAYER_VEL = 5
+    PLAYER_VEL = 6
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
@@ -82,6 +82,10 @@ class Player(pygame.sprite.Sprite):
         self.lives = 3
         self.animation_count = 0
         self.appearing = True
+        self.y_vel, self.x_vel = 0, 0
+        self.fall_count = 0
+
+        return [self.spawn_x, self.spawn_y]
 
     def move_left(self,vel):
         self.x_vel= -vel
@@ -95,13 +99,17 @@ class Player(pygame.sprite.Sprite):
             self.direction = 'right'
             self.animation_count = 0
 
+    def update_respawn_position(self, x, y):
+        self.spawn_x = x
+        self.spawn_y = y
+
     def loop(self,fps):
 
         if self.superspeed_active:
             self.superspeed_timer -=1
             if self.superspeed_timer <= 0:
                 self.superspeed_active = False
-                self.PLAYER_VEL = 5
+                self.PLAYER_VEL = 6
 
 
         if self.hovering:
@@ -128,8 +136,6 @@ class Player(pygame.sprite.Sprite):
             if self.invincible_timer <= 0:
                 self.invincible = False
 
-        if self.lives <= 0:
-            self.respawn()
         self.update_sprite()
 
     def landed(self):

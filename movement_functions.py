@@ -1,16 +1,16 @@
 import pygame
 
-fruits = ["cherry", "pineapple"]
+uncollidable = ["cherry", "pineapple", "checkpoint"]
 
 def handle_vertical_collision(player, objects, dy):
     collided_objects = []
     for obj in objects:
         if pygame.sprite.collide_mask(player, obj):
-            if dy > 0 and obj.name not in fruits:
+            if dy > 0 and obj.name not in uncollidable:
                 
                 player.rect.bottom = obj.rect.top
                 player.landed()
-            elif dy < 0 and obj.name not in fruits:
+            elif dy < 0 and obj.name not in uncollidable:
                 player.rect.top = obj.rect.bottom
                 player.hit_head()
 
@@ -39,9 +39,9 @@ def handle_move(player, objects):
     collide_left = collide(player,objects,-player.PLAYER_VEL*2)
     collide_right = collide(player,objects,player.PLAYER_VEL*2)
 
-    if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and (not collide_left or collide_left.name in fruits):
+    if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and (not collide_left or collide_left.name in uncollidable):
         player.move_left(player.PLAYER_VEL)
-    if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (not collide_right or collide_right.name in fruits):
+    if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (not collide_right or collide_right.name in uncollidable):
         player.move_right(player.PLAYER_VEL)
 
     vertical_collide = handle_vertical_collision(player, objects, player.y_vel)
@@ -67,3 +67,7 @@ def handle_move(player, objects):
         if obj and obj.name == "pineapple":
             obj.collected()
             player.activate_superspeed()
+        if obj and obj.name == "checkpoint":
+            obj.activate()
+            player.update_respawn_position(obj.rect.x, obj.rect.y)
+
