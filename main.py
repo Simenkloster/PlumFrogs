@@ -9,6 +9,7 @@ from Spikehead import Spikehead
 from Trampoline import Trampoline
 from sprite_functions import *
 from movement_functions import *
+from Button import Button
 pygame.init()
 
 heart = pygame.image.load('heart.png')
@@ -19,17 +20,45 @@ pygame.display.set_caption("Platformer")
 WIDTH, HEIGHT = 1200, 800
 FPS = 60
 window = pygame.display.set_mode((WIDTH, HEIGHT))
+background, bg_image = get_background("Yellow.png", WIDTH, HEIGHT)
 
+objects = []
+loopable = []
+
+def show_start_menu():
+
+    global objects, loopable
+
+    button = Button("Play", 100, 100)
+    
+    #Knapp for å begynne spillet
+    start_knapp_font = pygame.font.SysFont("times new roman", 50)
+    start_knapp_tekst = start_knapp_font.render("START SPILLET", True, (0, 0, 255))
+    start_knapp = start_knapp_tekst.get_rect(center=(390, 340))
+
+    window.blit(start_knapp_tekst, start_knapp)
+    pygame.display.flip()
+
+
+    waiting = True
+
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if start_knapp.collidepoint(mouse_pos):
+                    waiting = False
+                    from sindre_sitt_nivå import objects, loopable
 
 
 
 def main(window):
+
+
     clock = pygame.time.Clock()
     block_size = 96
-
-    # background collor
-    background, bg_image = get_background("Yellow.png", WIDTH, HEIGHT)
-    
     
     
     
@@ -38,13 +67,13 @@ def main(window):
 
 
     #Importing level
-    from sindre_sitt_nivå import objects, loopable
+    
 
 
     offset_x = 0
     scroll_area_width = 400
 
-
+    show_start_menu()
 
     #Game-loop
     run = True
