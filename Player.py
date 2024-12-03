@@ -6,7 +6,6 @@ class Player(pygame.sprite.Sprite):
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
-    HOVER_GRAVITY = 0.2
     HOVER_DURATION = 1
     INVINCIBLE_DURATION = 120
     SUPERSPEED_DURATION = 180
@@ -29,12 +28,12 @@ class Player(pygame.sprite.Sprite):
         self.SPRITES = load_sprite_sheets("MainCharacters","NinjaFrog",32,32,True)
         self.hit = False
         self.hit_count = 0
-        sprites = self.SPRITES['idle_left']  # Assuming 'idle_left' is the default state
-        self.sprite = sprites[0]  # Default to the first frame of the idle animation
+        sprites = self.SPRITES['idle_left']  
+        self.sprite = sprites[0]  
         self.centerx = self.rect.centerx
         self.centery = self.rect.centery
         self.hovering = False
-        self.HOVER_FORCE = -4
+        self.HOVER_FORCE = -2
         self.hover_timer = 0
         self.lives = 3
         self.invincible = False
@@ -95,6 +94,9 @@ class Player(pygame.sprite.Sprite):
         self.appearing = True
         self.y_vel, self.x_vel = 0, 0
         self.fall_count = 0
+
+        self.hit = False
+        self.hit_count = 0
 
         return [self.spawn_x, self.spawn_y]
 
@@ -162,7 +164,7 @@ class Player(pygame.sprite.Sprite):
 
     def bump_left(self):
         pass
-        #Skal lage denne senere
+        #Skal lage denne senere kanskje hvis jeg gidder
 
     def hit_head(self):
         self.count = 0
@@ -182,7 +184,7 @@ class Player(pygame.sprite.Sprite):
         self.hover_timer = 0
 
     def update_sprite(self):
-        if self.appearing:  # Handle the appearing animation
+        if self.appearing:  
             sprite_sheet = load_sprite_sheets("MainCharacters", "AppDisapp", 96, 96, False)
             sprites = sprite_sheet["appearing"]
             sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
@@ -190,12 +192,12 @@ class Player(pygame.sprite.Sprite):
             self.animation_count += 1
             self.update()
             
-            if sprite_index >= len(sprites)-1:  # End of appearing animation
-                self.appearing = False  # Exit appearing state
-                self.animation_count = 0  # Reset the animation count for normal animations
-                sprite_sheet = "idle"  # Transition to idle state after appearing
+            if sprite_index >= len(sprites)-1: 
+                self.appearing = False  
+                self.animation_count = 0  
+                sprite_sheet = "idle"  
                 sprites = self.SPRITES[sprite_sheet + "_" + self.direction]
-            self.sprite = sprites[sprite_index % len(sprites)]  # Loop if necessary
+            self.sprite = sprites[sprite_index % len(sprites)]  
             self.update()
         
         else:

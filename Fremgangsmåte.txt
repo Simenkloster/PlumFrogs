@@ -1,9 +1,9 @@
-1. Implementer klassen med de metodene som trengs
+1. Implementer klassen med de metodene som trengs. Gjerne kopier en del fra en tidligere klasse, men husk å endre på navn der det trengs.
 
-2. Legg til hva som skjer når man kolliderer med tingen i movement_functions
+2. Legg til hva som skjer når man kolliderer med tingen i funksjonen handle_move i movement_functions. Altså hvilken metode som skal kjøres i klassen til tingen som kollideres med, og hvilken metode som skal kjøres i player-klassen (for eksempel make_hit eller high_jump)
 
-3. Legg til eventuelle nye funksjoner i player_classen
+3. Legg til eventuelle nye funksjoner i player_classen dersom det trengs, og sjekk steg 2 på nytt
 
-4. Forsøk å lage den nye tingen i main.py og test om det funker når du legger den til på mappet
+4. Forsøk å lage den nye tingen i nivået ditt og test om det funker når du legger den til i spillet
 
-5. Debug til det funker
+5. Dersom det funker, perfekt! Hvis ikke, spør læreren om hjelp med å tolke feilmeldingen(e) du får.
