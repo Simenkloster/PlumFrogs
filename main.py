@@ -201,6 +201,14 @@ def main(window):
         if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) > 0) or (Player1.rect.left - offset_x <= scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) < 0)):
             offset_x += Player1.x_vel + Player1.conveyor_speed
 
+        if ((Player1.rect.top - offset_y >= HEIGHT - scroll_area_height) and Player1.y_vel > 0 ) or ((Player1.rect.bottom - offset_y <= scroll_area_height) and Player1.y_vel < 0):
+            #if offset_y + Player1.y_vel <= 0:
+            #    offset_y += Player1.y_vel
+            offset_y += Player1.y_vel
+            if offset_y > 0:
+                offset_y = 0
+
+
 
 
 
