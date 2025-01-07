@@ -74,4 +74,7 @@ def handle_move(player, objects):
             player.activate_conveyor()
         if obj and obj.name != "speedplatform":
             player.deactivate_conveyor()
+        if obj and obj.name == "goal":
+            obj.activate()
+            player.activateFinishlevelTimer()
 
