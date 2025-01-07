@@ -59,6 +59,8 @@ def handle_move(player, objects):
             player.landed()
         if obj and obj.name == "fan":
             player.hover()
+        if obj and obj.name == "spikehead":
+            player.make_hit()
         if obj and obj.name == "cherry":
             if obj.isCollected == False:
                 if player.lives < 3:
