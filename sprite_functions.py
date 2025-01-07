@@ -50,11 +50,11 @@ def get_background(name, WIDTH, HEIGHT):
     return tiles, image
 
 #Tegne background
-def draw(window, background, bg_image, player, objects, offset_x):
+def draw(window, background, bg_image, player, objects, offset_x,offset_y):
     for tile in background:
         window.blit(bg_image, tuple(tile))
     
     for obj in objects:
-        obj.draw(window, offset_x)
+        obj.draw(window, offset_x,offset_y)
 
-    player.draw(window, offset_x)
+    player.draw(window, offset_x,offset_y)

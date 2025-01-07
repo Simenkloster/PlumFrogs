@@ -9,11 +9,14 @@ class Player(pygame.sprite.Sprite):
     HOVER_DURATION = 1
     INVINCIBLE_DURATION = 120
     SUPERSPEED_DURATION = 180
-
+    FINISHLEVEL_DURATION = 180
+    
     def __init__(self,x,y,width,height):
         super().__init__()
-        self.spawn_x = x
-        self.spawn_y = y
+        self.initialX = x
+        self.initialY = y
+        self.spawn_x = self.initialX
+        self.spawn_y = self.initialY
         self.width = width
         self.height = height
         self.rect = pygame.Rect(x,y,width,height)
@@ -40,14 +43,24 @@ class Player(pygame.sprite.Sprite):
         self.invincible_timer = 0
         self.superspeed_active = False
         self.superspeed_timer = 0
+        self.finishLevel_timer = 0
+        self.finishlevelTimer_active = False
         self.conveyor_active = False  # Whether the conveyor effect is active
-        self.conveyor_speed = 0 
+        self.conveyor_speed = 0
+        self.finishedLevelStatus = False
+
+    
 
     def activate_superspeed(self):
         if not self.superspeed_active:
             self.superspeed_active = True
             self.superspeed_timer = self.SUPERSPEED_DURATION
             self.PLAYER_VEL = 10
+    
+    def activateFinishlevelTimer(self):
+        if not self.finishlevelTimer_active:
+            self.finishlevelTimer_active = True
+            self.finishLevel_timer = self.FINISHLEVEL_DURATION
 
 
     def jump(self):
@@ -101,22 +114,38 @@ class Player(pygame.sprite.Sprite):
         return [self.spawn_x, self.spawn_y]
 
     def move_left(self,vel):
-        self.x_vel= -vel
-        if self.direction != 'left':
-            self.direction = 'left'
-            self.animation_count = 0
+        if not self.appearing:
+            self.x_vel= -vel
+            if self.direction != 'left':
+                self.direction = 'left'
+                self.animation_count = 0
 
     def move_right(self,vel):
-        self.x_vel = vel
-        if self.direction != 'right':
-            self.direction = 'right'
-            self.animation_count = 0
+        if not self.appearing:
+            self.x_vel = vel
+            if self.direction != 'right':
+                self.direction = 'right'
+                self.animation_count = 0
+
+    def finishLevel(self):
+        self.spawn_x = self.initialX
+        self.spawn_y = self.initialY
+        self.finishedLevelStatus = True
+        
 
     def update_respawn_position(self, x, y):
         self.spawn_x = x
         self.spawn_y = y
 
+        return [x, y] #Prøver å returnere siste spawn-setting slik at en kan sette riktig offset i main når man trykker respawn knappen? Funker nå i hvert fall
+    
+
     def loop(self,fps):
+
+        if self.finishlevelTimer_active:
+            self.finishLevel_timer -= 1
+            if self.finishLevel_timer <= 0:
+                self.finishLevel()
 
         if self.superspeed_active:
             self.superspeed_timer -=1
@@ -196,7 +225,6 @@ class Player(pygame.sprite.Sprite):
                 self.appearing = False  
                 self.animation_count = 0  
                 sprite_sheet = "idle"  
-                sprites = self.SPRITES[sprite_sheet + "_" + self.direction]
             self.sprite = sprites[sprite_index % len(sprites)]  
             self.update()
         
@@ -214,7 +242,6 @@ class Player(pygame.sprite.Sprite):
             elif self.x_vel != 0:
                 sprite_sheet = "run"
 
-            
             sprite_sheet_name = sprite_sheet + "_" + self.direction
             sprites = self.SPRITES[sprite_sheet_name]
             sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites)
@@ -227,5 +254,5 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.sprite.get_rect(center=(self.rect.centerx, self.rect.centery))
         self.mask = pygame.mask.from_surface(self.sprite)
 
-    def draw(self,win, offset_x):
-        win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y))
+    def draw(self,win, offset_x,offset_y):
+        win.blit(self.sprite, (self.rect.x - offset_x, self.rect.y - offset_y))

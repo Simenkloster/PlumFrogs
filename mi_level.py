@@ -6,20 +6,35 @@ from FallingPlatform import Falling_platform
 from Trampoline import Trampoline
 from Player import Player
 from Block import Block
+from Checkpoint import Checkpoint
+from SpeedPlatform import SpeedPlatform
+#from pineapple import pineapple
 
 WIDTH, HEIGHT = 1200, 800
 block_size = 96
 
+def ML_spike(xlist,x,y,length): #1032, 5, 5
+    for i in range(length):
+        x = x+ 32
+        xlist.append(Spike(x,(HEIGHT-block_size*5)-32, 16, 16))
 
 Player1 = Player(100, 100, 50, 50)
+
+
 fire = Fire(0, HEIGHT - block_size - 64, 16, 32)
 fire.on()
 spike = Spike(200, HEIGHT-block_size-32, 16, 16)
 spike2 = Spike(600,(HEIGHT-block_size*6)-32, 16, 16)
-cherry = Cherry(400,(HEIGHT-block_size*6)-32, 32, 32)
-fan = Fan(0, HEIGHT - block_size - 16, 24, 8)
+
+checkpoint1 = Checkpoint(1300, (HEIGHT-block_size*8) - 128, 64, 64)
+
+cherry = Cherry(570,(HEIGHT-block_size*4.2)-32, 32, 32)
+bugcherry = Cherry(1070,(HEIGHT-block_size*3.5)-32,32,32)
+fan = Fan(1550, HEIGHT - block_size - 688)
 fan.on()
-falling_platform = Falling_platform(200, (HEIGHT - block_size*8) - 64, 32, 10)
+falling_platform = Falling_platform(2700, (HEIGHT - block_size*2) - 64, 32, 10)
+
+
 
 trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
 
@@ -27,10 +42,20 @@ trampoline = Trampoline(300, HEIGHT - block_size - 56, 28, 28)
 floor = [Block(i * block_size, HEIGHT - block_size, block_size) for i in range(-WIDTH // block_size, WIDTH * 2 // block_size)]
 floor2 = [Block((i + 5) * block_size, HEIGHT - 6 * block_size, block_size) for i in range(4)]
 floor3 = [Block((i + 5) * block_size, HEIGHT - 4 * block_size, block_size) for i in range(5)]
+floor4 = [Block((i + 13) * block_size, HEIGHT - 8 * block_size, block_size) for i in range(5)]
+floor5 = [Block((i + 11) * block_size, HEIGHT - 5 * block_size, block_size) for i in range(3)]
 wallfloor3 = Block(5 * block_size, HEIGHT - 5 * block_size, block_size)
 floor2wall = [Block(10*block_size, HEIGHT - (2 + i) * block_size, block_size) for i in range(7)]
+floor5wall = [Block(13*block_size, HEIGHT - (6 + i) * block_size, block_size) for i in range(2)]
+floor6 = [Block((i + 19) * block_size, HEIGHT - 3 * block_size, block_size) for i in range(7)]
+nwall1 = [Block(18*block_size, HEIGHT - (3 + i) * block_size, block_size) for i in range(6)]
 
 
 #Liste med alle tingene som inngår i spillet
-loopable = [fan,cherry,fire,falling_platform,trampoline]
-objects = [*floor,*floor2,*floor2wall,*floor3,wallfloor3, fire, falling_platform, spike,spike2, fan, trampoline,cherry]
+loopable = [fan,cherry,bugcherry,fire,falling_platform,trampoline,checkpoint1]
+objects = [*floor,*floor2,*floor2wall,*floor3,*floor4,*floor5,*floor6,*floor5wall,*nwall1,wallfloor3, fire, falling_platform, spike,spike2, fan, trampoline,cherry,bugcherry,checkpoint1]
+ML_spike(objects,1032, 5, 5)
+
+
+
+    
