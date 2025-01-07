@@ -71,7 +71,9 @@ def main(window):
 
 
     offset_x = 0
+    offset_y = 0
     scroll_area_width = 400
+    scroll_area_height = 200
 
     show_start_menu()
 
@@ -94,7 +96,7 @@ def main(window):
         handle_move(Player1, objects) 
         
         #Tegner opp alt
-        draw(window, background, bg_image, Player1, objects, offset_x)
+        draw(window, background, bg_image, Player1, objects, offset_x,offset_y)
         
         dynamic_x = 0
         for i in range(Player1.lives):
@@ -102,6 +104,7 @@ def main(window):
             window.blit(heart,(dynamic_x,30))
         if Player1.lives == 0:
             offset_x = 0
+            offset_y = 0
 
 
         
@@ -111,6 +114,13 @@ def main(window):
         #Sjekker hvor spilleren er på skjermen og flytter kameraet
         if ((Player1.rect.right - offset_x >= WIDTH - scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) > 0) or (Player1.rect.left - offset_x <= scroll_area_width and (Player1.x_vel + Player1.conveyor_speed) < 0)):
             offset_x += Player1.x_vel + Player1.conveyor_speed
+        
+        if ((Player1.rect.top - offset_y >= HEIGHT - scroll_area_height) and Player1.y_vel > 0 ) or ((Player1.rect.bottom - offset_y <= scroll_area_height) and Player1.y_vel < 0):
+            #if offset_y + Player1.y_vel <= 0:
+            #    offset_y += Player1.y_vel
+            offset_y += Player1.y_vel
+            if offset_y > 0:
+                offset_y = 0
 
 
         for event in pygame.event.get():
