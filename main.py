@@ -166,10 +166,14 @@ def main(window):
             Player1.finishedLevelStatus = False
             Player1.respawn()
             offset_x = Player1.spawn_x - (WIDTH/2)
+            if Player1.spawn_y <= 0:
+                offset_y = Player1.spawn_y
 
 
         if Player1.rect.centery >= (HEIGHT + 200) or Player1.lives <= 0:
             offset_x = Player1.spawn_x - (WIDTH/2)
+            if Player1.spawn_y <= 0:
+                offset_y = Player1.spawn_y
             Player1.respawn()
         
         for obj in loopable:
@@ -202,8 +206,6 @@ def main(window):
             offset_x += Player1.x_vel + Player1.conveyor_speed
 
         if ((Player1.rect.top - offset_y >= HEIGHT - scroll_area_height) and Player1.y_vel > 0 ) or ((Player1.rect.bottom - offset_y <= scroll_area_height) and Player1.y_vel < 0):
-            #if offset_y + Player1.y_vel <= 0:
-            #    offset_y += Player1.y_vel
             offset_y += Player1.y_vel
             if offset_y > 0:
                 offset_y = 0
@@ -220,6 +222,8 @@ def main(window):
                 
                 show_start_menu()
                 offset_x = Player1.spawn_x - (WIDTH/2)
+                if Player1.spawn_y <= 0:
+                    offset_y = Player1.spawn_y
                 Player1.respawn()
                 break
 
@@ -232,6 +236,9 @@ def main(window):
                 if restartButtonImageRect.collidepoint(mouse_pos):
                     Player1.respawn()
                     offset_x = Player1.spawn_x - (WIDTH/2)
+                    if Player1.spawn_y <= 0:
+                        offset_y = Player1.spawn_y
+
                     
 
     
