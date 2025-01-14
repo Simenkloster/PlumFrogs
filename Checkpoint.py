@@ -5,7 +5,7 @@ from sprite_functions import load_sprite_sheets
 
 
 class Checkpoint(Object):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width=64, height=64):
         super().__init__(x, y, width, height, name = "checkpoint")
         self.checkpoint = load_sprite_sheets("Checkpoints", "Checkpoint", width, height)
         self.image = self.checkpoint["CheckpointNoFlag"][0]
