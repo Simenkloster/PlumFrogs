@@ -158,12 +158,13 @@ def main(window):
         clock.tick(FPS)
         Player1.loop(FPS)
 
+        print(Player1.finishedLevelStatus)
+
         if Player1.finishedLevelStatus == True:
             gameActive = False
             menuActive = True
-            show_start_menu()
-            offset_x = 0
             Player1.finishedLevelStatus = False
+            show_start_menu()
             Player1.respawn()
             offset_x = Player1.spawn_x - (WIDTH/2)
             if Player1.spawn_y <= 0:
