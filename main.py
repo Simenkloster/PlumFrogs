@@ -51,13 +51,15 @@ background, bg_image = get_background("Yellow.png", WIDTH, HEIGHT)
 
 objects = []
 loopable = []
+player_hp = 3
+player_pos = [100, 100]
 
 menuActive = True
 gameActive = False
 
 def show_start_menu():
 
-    global objects, loopable, gameActive, menuActive
+    global objects, loopable, gameActive, menuActive, player_pos, player_hp
 
     start_meny_font = pygame.font.Font('./Fonts/DigitalArcade.ttf', 120)
     levelbutton_font = pygame.font.Font('./Fonts/ARCADECLASSIC.TTF', 60)
@@ -102,29 +104,39 @@ def show_start_menu():
                     mouse_pos = pygame.mouse.get_pos()
                     if playButtonRect_simen.collidepoint(mouse_pos):
                         waiting = False
+                        player_hp = 3
+                        player_pos = [100, 100]
                         from Simen_testnivå import objects, loopable
                         gameActive = True
                         menuActive = False
                     
                     if playButtonRect_mikkel.collidepoint(mouse_pos):
                         waiting = False
+                        player_hp = 3
+                        player_pos = [100, 100]
                         from mi_level import objects, loopable
                         gameActive = True
                         menuActive = False
                     
                     if playButtonRect_kjølv.collidepoint(mouse_pos):
                         waiting = False
-                        from kj_level import objects, loopable
+                        player_hp = 3
+                        player_pos = [100, 100]
+                        from kj_level import objects, loopable, player_pos, player_hp
                         gameActive = True
                         menuActive = False
 
                     if playButtonRect_kristoffer.collidepoint(mouse_pos):
                         waiting = False
+                        player_hp = 3
+                        player_pos = [100, 100]
                         from kristoffersittlevel import objects, loopable
                         gameActive = True
                         menuActive = False
                     if playButtonRect_sindre.collidepoint(mouse_pos):
                         waiting = False
+                        player_hp = 3
+                        player_pos = [100, 100]
                         from sindre_sitt_nivå import objects, loopable
                         gameActive = True
                         menuActive = False
@@ -133,26 +145,19 @@ def show_start_menu():
 
 def main(window):
 
-    global objects, loopable, gameActive, menuActive
+    global objects, loopable, gameActive, menuActive, player_pos, player_hp
 
     clock = pygame.time.Clock()
     block_size = 96
-    
-    
-    
-    #Making player
-    Player1 = Player(100, 100, 50, 50)
 
-
-
-
-    offset_x = 0
     offset_y = 0
     scroll_area_width = 400
     scroll_area_height = 200
 
     show_start_menu()
-
+    Player1 = Player(player_pos[0], player_pos[1], 50, 50)
+    Player1.lives = player_hp
+    offset_x = player_pos[0]-400
     #Game-loop
     while gameActive:
         clock.tick(FPS)
@@ -162,9 +167,14 @@ def main(window):
             gameActive = False
             menuActive = True
             show_start_menu()
+            Player1.initialX = player_pos[0]
+            Player1.initialY = player_pos[1]
+            Player1.spawn_x = Player1.initialX
+            Player1.spawn_y = Player1.initialY
             offset_x = 0
             Player1.finishedLevelStatus = False
             Player1.respawn()
+            Player1.lives = player_hp
             offset_x = Player1.spawn_x - (WIDTH/2)
             if Player1.spawn_y <= 0:
                 offset_y = Player1.spawn_y
@@ -175,6 +185,7 @@ def main(window):
             if Player1.spawn_y <= 0:
                 offset_y = Player1.spawn_y
             Player1.respawn()
+            Player1.lives = player_hp
         
         for obj in loopable:
             obj.loop()
@@ -221,10 +232,15 @@ def main(window):
                 Player1.finishLevel()
                 
                 show_start_menu()
+                Player1.initialX = player_pos[0]
+                Player1.initialY = player_pos[1]
+                Player1.spawn_x = Player1.initialX
+                Player1.spawn_y = Player1.initialY
                 offset_x = Player1.spawn_x - (WIDTH/2)
                 if Player1.spawn_y <= 0:
                     offset_y = Player1.spawn_y
                 Player1.respawn()
+                Player1.lives = player_hp
                 break
 
             if event.type == pygame.KEYDOWN:
@@ -235,6 +251,7 @@ def main(window):
                 mouse_pos = pygame.mouse.get_pos()
                 if restartButtonImageRect.collidepoint(mouse_pos):
                     Player1.respawn()
+                    Player1.lives = player_hp
                     offset_x = Player1.spawn_x - (WIDTH/2)
                     if Player1.spawn_y <= 0:
                         offset_y = Player1.spawn_y

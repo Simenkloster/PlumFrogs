@@ -2,7 +2,7 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Player(pygame.sprite.Sprite):
-    PLAYER_VEL = 6
+    PLAYER_VEL = 5
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
@@ -107,7 +107,7 @@ class Player(pygame.sprite.Sprite):
         self.appearing = True
         self.y_vel, self.x_vel = 0, 0
         self.fall_count = 0
-
+        self.invincible_timer = 0
         self.hit = False
         self.hit_count = 0
 
@@ -146,6 +146,8 @@ class Player(pygame.sprite.Sprite):
             self.finishLevel_timer -= 1
             if self.finishLevel_timer <= 0:
                 self.finishLevel()
+                self.finishlevelTimer_active = False
+                self.finishLevel_timer = self.FINISHLEVEL_DURATION
 
         if self.superspeed_active:
             self.superspeed_timer -=1
