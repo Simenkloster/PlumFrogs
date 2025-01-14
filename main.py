@@ -163,6 +163,8 @@ def main(window):
         clock.tick(FPS)
         Player1.loop(FPS)
 
+        print(Player1.finishedLevelStatus)
+
         if Player1.finishedLevelStatus == True:
             gameActive = False
             menuActive = True
@@ -173,6 +175,7 @@ def main(window):
             Player1.spawn_y = Player1.initialY
             offset_x = 0
             Player1.finishedLevelStatus = False
+            show_start_menu()
             Player1.respawn()
             Player1.lives = player_hp
             offset_x = Player1.spawn_x - (WIDTH/2)

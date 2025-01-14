@@ -101,6 +101,7 @@ class Player(pygame.sprite.Sprite):
             self.invincible_timer = self.INVINCIBLE_DURATION
     
     def respawn(self):
+        self.finishedLevelStatus = False
         self.rect = pygame.Rect(self.spawn_x,self.spawn_y,self.width,self.height)
         self.lives = 3
         self.animation_count = 0
@@ -128,8 +129,11 @@ class Player(pygame.sprite.Sprite):
                 self.animation_count = 0
 
     def finishLevel(self):
-        self.spawn_x = self.initialX
-        self.spawn_y = self.initialY
+        print("KJØRER FINISH LEVEL")
+        self.rect.x = 100
+        self.rect.y = 100
+        self.spawn_x = 100
+        self.spawn_y = 100
         self.finishedLevelStatus = True
         
 
