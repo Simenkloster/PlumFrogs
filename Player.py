@@ -2,7 +2,7 @@ import pygame
 from sprite_functions import load_sprite_sheets
 
 class Player(pygame.sprite.Sprite):
-    PLAYER_VEL = 6
+    PLAYER_VEL = 5
     COLOR = (0,200,255)
     GRAVITY = 1
     ANIMATION_DELAY = 3
@@ -101,13 +101,14 @@ class Player(pygame.sprite.Sprite):
             self.invincible_timer = self.INVINCIBLE_DURATION
     
     def respawn(self):
+        self.finishedLevelStatus = False
         self.rect = pygame.Rect(self.spawn_x,self.spawn_y,self.width,self.height)
         self.lives = 3
         self.animation_count = 0
         self.appearing = True
         self.y_vel, self.x_vel = 0, 0
         self.fall_count = 0
-
+        self.invincible_timer = 0
         self.hit = False
         self.hit_count = 0
 
@@ -128,8 +129,11 @@ class Player(pygame.sprite.Sprite):
                 self.animation_count = 0
 
     def finishLevel(self):
-        self.spawn_x = self.initialX
-        self.spawn_y = self.initialY
+        print("KJØRER FINISH LEVEL")
+        self.rect.x = 100
+        self.rect.y = 100
+        self.spawn_x = 100
+        self.spawn_y = 100
         self.finishedLevelStatus = True
         
 
@@ -146,6 +150,8 @@ class Player(pygame.sprite.Sprite):
             self.finishLevel_timer -= 1
             if self.finishLevel_timer <= 0:
                 self.finishLevel()
+                self.finishlevelTimer_active = False
+                self.finishLevel_timer = self.FINISHLEVEL_DURATION
 
         if self.superspeed_active:
             self.superspeed_timer -=1
